@@ -15,8 +15,10 @@ public class User {
     private Long id;
     private String username;
     private String password;
-    private Long gamesWon;
-    private Long gamesLost;
+    private String mail;
+    private int phone;
+    private Long gamesWon = 0L;
+    private Long gamesLost= 0L;
     //Juegos totales suma de (gamesWon + gamesLost)
 
 

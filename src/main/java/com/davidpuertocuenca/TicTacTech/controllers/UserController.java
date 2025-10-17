@@ -31,4 +31,19 @@ public class UserController {
 
         return ResponseEntity.ok(loggedUser);
     }
+
+    @PostMapping("/register")
+    public ResponseEntity<User> register(@RequestBody User user) {
+        User newUser = userService.saveUser(user);
+
+        if (newUser == null) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+        // TEST BORRA CONTRASENA
+        newUser.setPassword(null);
+
+        return ResponseEntity.ok(newUser);
+    }
+
+
 }

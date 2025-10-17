@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Login - TicTacTech</title>
-  <link rel="stylesheet" href="login.css">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <div class="login-container">
@@ -15,39 +15,6 @@
     <p class="register-text">¿No tienes cuenta? <a href="register.html">Regístrate</a></p>
   </form>
 </div>
-
-<script>
-  // Debe coincidir con tu endpoint en el controlador (por ejemplo: @PostMapping("/api/login"))
-  const API_URL = "http://localhost:8080/api/login";
-
-  document.getElementById("loginForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
-
-    try {
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
-      });
-
-      if (res.ok) {
-        const user = await res.json(); // puedes devolver el usuario logueado desde el backend
-        alert(`✅ Login correcto. Bienvenido ${user.username}!`);
-        window.location.href = "game.html";
-      } else if (res.status === 401) {
-        alert("❌ Usuario o contraseña incorrectos");
-      } else {
-        alert("⚠️ Error en el servidor");
-      }
-
-    } catch (error) {
-      alert("❌ No se pudo conectar con el servidor");
-      console.error(error);
-    }
-  });
-</script>
+<script src="js/login.js"></script>
 </body>
 </html>

@@ -13,6 +13,13 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    public User saveUser(User newUser){
+        if(userRepository.findByUsername(newUser.getUsername()).isEmpty()) {
+            return userRepository.save(newUser);
+        }
+        return null;
+    }
+
     public User userLogin(String username, String password){
        User user  = userRepository.findByUsername(username).orElse(null);
 
