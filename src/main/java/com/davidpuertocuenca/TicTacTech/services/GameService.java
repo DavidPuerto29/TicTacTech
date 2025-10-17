@@ -18,7 +18,7 @@ public class GameService {
 
     public Game createGame(User player1, User player2) {
 
-        Game game = new Game(new int[3][3],player1, "ongoing", 1, 0);
+        Game game = new Game(new int[3][3],player1, player2,"ongoing", 1, 0);
 
         //En caso de que el segundo usuario no haya iniciado sesión se pondrá automáticamente el perfil invitado.
         if(player2 != null) {

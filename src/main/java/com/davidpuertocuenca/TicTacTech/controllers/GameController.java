@@ -35,8 +35,12 @@ public class GameController {
             return ResponseEntity.badRequest().build();
         }
 
+        if(player2.isEmpty()){
+            //En caso de que el segundo usuario no haya iniciado sesión, se le asignara el perfil de invitado que siempre será id = 1.
+            player2 = userService.findById(1L);
+        }
         // Si player2 no existe, se asignará el "invitado" por defecto
-        Game game = gameService.createGame(player1.get(), player2.orElse(null));
+        Game game = gameService.createGame(player1.get(), player2.get());
         return ResponseEntity.ok(game);
     }
 

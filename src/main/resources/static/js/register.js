@@ -27,7 +27,7 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
 
     if (res.ok) {
       alert("✅ Registro correcto. Serás redirigido al login.");
-      window.location.href = "login.html";
+      window.location.href = "index.html";
     } else if (res.status === 409) {
       alert("❌ El usuario ya existe. Elige otro nombre de usuario.");
     } else {

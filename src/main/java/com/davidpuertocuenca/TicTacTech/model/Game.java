@@ -14,16 +14,21 @@ public class Game {
     private Long id;
     @Transient
     private int[][] board = new int[3][3];
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "player1_id")
     private User player1;
-    //Por defecto el segundo jugar es invitado, si inicia sesión se hace un set para añadirlo al game.
-    private User player2 = new User("invitado", "invitado", "invitado@hotmail.com", 622222222, 0L, 0L);
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "player2_id")
+    //Por defecto el segundo jugador es invitado, si inicia sesión se hace un set para añadirlo al game.
+    private User player2;
     private String gameStatus;
     private int turn;
     private int rounds;
 
-    public Game(int[][] board, User player1, String gameStatus, int turn, int rounds) {
+    public Game(int[][] board, User player1, User player2, String gameStatus, int turn, int rounds) {
         this.board = board;
         this.player1 = player1;
+        this.player2 = player2;
         this.gameStatus = gameStatus;
         this.turn = turn;
         this.rounds = rounds;

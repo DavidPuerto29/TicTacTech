@@ -14,8 +14,10 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
 
     if (res.ok) {
       const user = await res.json();
-      alert(`✅ Login correcto. Bienvenido ${user.username}!`);
-      window.location.href = "game.html";
+           localStorage.setItem("userId", user.id);
+           localStorage.setItem("username", user.username);
+       alert(`✅ Login correcto. Bienvenido ${user.username}!`);
+       window.location.href = "game.html";
     } else if (res.status === 401) {
       alert("❌ Usuario o contraseña incorrectos");
     } else {
