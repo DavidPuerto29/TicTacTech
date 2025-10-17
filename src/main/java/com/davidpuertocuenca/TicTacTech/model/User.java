@@ -31,16 +31,6 @@ public class User {
         this.gamesLost = gamesLost;
     }
 
-    public User(Long id,String username, String password, String mail, int phone, Long gamesWon, Long gamesLost) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.mail = mail;
-        this.phone = phone;
-        this.gamesWon = gamesWon;
-        this.gamesLost = gamesLost;
-    }
-
     public void addVictory(){
         this.gamesWon +=1;
     }

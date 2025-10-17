@@ -51,9 +51,15 @@ public class GameService {
             game.setGameStatus("finished");
             if (winner == 1) {
                 game.getPlayer1().addVictory();
-                game.getPlayer2().addDefeat();
+                //Para evitar guardar datos del invitado.
+                if(!game.getPlayer2().getUsername().equals("invitado")) {
+                    game.getPlayer2().addDefeat();
+                }
             } else if (winner == 2) {
-                game.getPlayer2().addVictory();
+                //Para evitar guardar datos del invitado.
+                if(!game.getPlayer2().getUsername().equals("invitado")) {
+                    game.getPlayer2().addVictory();
+                }
                 game.getPlayer1().addDefeat();
             }
         } else if (isBoardFull(game.getBoard())) {

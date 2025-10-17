@@ -8,20 +8,22 @@ const statusText = document.getElementById("statusText");
 
 // 🔹 Empezar partida
 document.getElementById("startGameBtn").addEventListener("click", async () => {
-  // simulamos que ya hay usuario logueado (player1)
-  currentPlayerId = localStorage.getItem("userId"); // <- guardado en login
-
-  if (!currentPlayerId) {
+  const player1Id = localStorage.getItem("userId"); // jugador 1 logueado
+  if (!player1Id) {
     alert("❌ Inicia sesión antes de jugar");
     return;
   }
 
-  const res = await fetch(`${API_URL}/create?player1Id=${currentPlayerId}&player2Id=${player2Id || ""}`, {
+  // jugador 2: si hay session usar su id, sino invitado (id 1)
+  const player2IdToSend = player2Id || 1;
+
+  const res = await fetch(`${API_URL}/create?player1Id=${player1Id}&player2Id=${player2IdToSend}`, {
     method: "POST"
   });
 
   if (res.ok) {
     currentGame = await res.json();
+    currentPlayerTurn = 1; // empieza jugador 1
     renderBoard();
     statusText.textContent = "🎮 Partida iniciada, turno del Jugador 1";
   } else {
@@ -52,20 +54,30 @@ function renderBoard() {
 async function makeMove(e) {
   if (!currentGame) return alert("⚠️ No hay partida activa");
 
-  const row = e.target.dataset.row;
-  const col = e.target.dataset.col;
+   const row = Number(e.target.dataset.row);
+   const col = Number(e.target.dataset.col);
 
-  const res = await fetch(`${API_URL}/${currentGame.id}/move`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ playerId: currentPlayerId, row, col })
-  });
+  // asignamos el playerId correcto según el turno
+  const movePlayerId = currentGame.turn === 1
+    ? localStorage.getItem("userId") // jugador 1 siempre logueado
+    : (player2Id || 1);              // jugador 2: invitado si no hay sesión
+
+    const res = await fetch(`${API_URL}/${currentGame.id}/move`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        playerId: Number(movePlayerId),
+        row,
+        col
+      })
+    });
 
   if (res.ok) {
     currentGame = await res.json();
-    e.target.textContent = currentGame.turn === 2 ? "X" : "O"; // cambia turno visualmente
+    e.target.textContent = currentGame.turn === 2 ? "X" : "O"; // cambiar visualmente
     statusText.textContent = `Turno del Jugador ${currentGame.turn}`;
   } else {
     alert("❌ Movimiento no válido o error del servidor");
   }
 }
+
