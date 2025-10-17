@@ -22,19 +22,20 @@ public class User {
     //Juegos totales suma de (gamesWon + gamesLost)
 
 
-    public User(Long id, String username, String password, Long gamesWon, Long gamesLost) {
-        this.id = id;
+    public User(String username, String password, String mail, int phone, Long gamesWon, Long gamesLost) {
         this.username = username;
         this.password = password;
+        this.mail = mail;
+        this.phone = phone;
         this.gamesWon = gamesWon;
         this.gamesLost = gamesLost;
     }
 
-    private void addVictory(){
+    public void addVictory(){
         this.gamesWon +=1;
     }
 
-    private void addDefeat(){
+    public void addDefeat(){
         this.gamesLost +=1;
     }
 
