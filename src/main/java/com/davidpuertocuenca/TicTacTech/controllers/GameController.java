@@ -50,33 +50,39 @@ public class GameController {
      * Body JSON: { "playerId": 1, "row": 0, "col": 1 }
      */
     @PostMapping("/{gameId}/move")
-    public ResponseEntity<Game> makeMove(@PathVariable Long gameId, @RequestBody MoveRequest moveRequest) {
+    public ResponseEntity<?> makeMove(@PathVariable Long gameId, @RequestBody MoveRequest moveRequest) {
 
         Optional<Game> gameOpt = gameService.findById(gameId);
         Optional<User> playerOpt = userService.findById(moveRequest.getPlayerId());
 
-        if (gameOpt.isEmpty() || playerOpt.isEmpty()) {
-            return ResponseEntity.notFound().build();
+        if (gameOpt.isEmpty()) return ResponseEntity.status(404).body("Game no encontrado");
+        if (playerOpt.isEmpty()) return ResponseEntity.status(404).body("Jugador no encontrado");
+
+        Game game = gameOpt.get();
+        User player = playerOpt.get();
+
+        // Validar fila y columna
+        if (moveRequest.getRow() < 0 || moveRequest.getRow() > 2 ||
+                moveRequest.getCol() < 0 || moveRequest.getCol() > 2) {
+            return ResponseEntity.badRequest().body("Fila o columna fuera de rango");
         }
 
-        try {
-            Game updatedGame = gameService.makeMove(
-                    gameOpt.get(),
-                    playerOpt.get(),
-                    moveRequest.getRow(),
-                    moveRequest.getCol()
-            );
-            return ResponseEntity.ok(updatedGame);
-
-        } catch (IllegalStateException | IllegalArgumentException e) {
-            // Si hay un error lógico, devolvemos 400 con el mensaje
-            return ResponseEntity.badRequest().body(null);
-
-        } catch (Exception e) {
-            // Si hay un error inesperado, devolvemos 500
-            return ResponseEntity.internalServerError().build();
+        // Validar turno
+        if ((game.getTurn() == 1 && !game.getPlayer1().getId().equals(player.getId())) ||
+                (game.getTurn() == 2 && !game.getPlayer2().getId().equals(player.getId()))) {
+            return ResponseEntity.badRequest().body("No es tu turno");
         }
+
+        // Validar celda vacía
+        if (game.getBoard()[moveRequest.getRow()][moveRequest.getCol()] != 0) {
+            return ResponseEntity.badRequest().body("Celda ocupada");
+        }
+
+        // Realizar movimiento
+        Game updatedGame = gameService.makeMove(game, player, moveRequest.getRow(), moveRequest.getCol());
+        return ResponseEntity.ok(updatedGame);
     }
+
 
     // DTO interno para recibir el movimiento
     public static class MoveRequest {

@@ -19,7 +19,7 @@ public class Game {
     private User player1;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "player2_id")
-    //Por defecto el segundo jugador es invitado, si inicia sesión se hace un set para añadirlo al game.
+    //Por defecto el segundo jugador es invitado con id 1, si inicia sesión se hace un set para añadirlo al game.
     private User player2;
     private String gameStatus;
     private int turn;
