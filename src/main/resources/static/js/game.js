@@ -43,7 +43,7 @@ function renderBoard() {
       cell.dataset.row = i;
       cell.dataset.col = j;
 
-      // pinta si ya hay algo en el tablero
+      // Pinta si ya hay algo en el tablero
       const value = currentGame.board[i][j];
       if (value === 1) cell.textContent = "X";
       else if (value === 2) cell.textContent = "O";
@@ -57,7 +57,7 @@ function renderBoard() {
 }
 
 async function makeMove(e) {
-  // Comprobar que hay partida y tiene ID
+  // Comprobación de que la partida existe y tiene id
   if (!currentGame || !currentGame.id) {
     return alert("⚠️ No hay partida activa o no tiene ID válido");
   }
@@ -73,11 +73,23 @@ async function makeMove(e) {
   // Jugador actual
   const movePlayerId = currentGame.turn === 1
     ? Number(localStorage.getItem("userId")) // Jugador 1 siempre logueado
-    : Number(player2Id || 1);               // Jugador 2: invitado si no hay sesión
+    : Number(player2Id || 1);               // Jugador 2: invitado si no hay sesión iniciada
 
   if (!movePlayerId) {
     return alert("❌ No hay jugador válido para mover");
   }
+
+console.log("Enviando movimiento:", {
+    playerId: movePlayerId,
+    row,
+    col
+  });
+
+console.log("JSON que se envía:", JSON.stringify({
+  playerId: Number(movePlayerId),
+  row: Number(row),
+  col: Number(col)
+}));
 
   try {
     const res = await fetch(`${API_URL}/${currentGame.id}/move`, {
@@ -92,16 +104,17 @@ async function makeMove(e) {
 
 
     if (!res.ok) {
-      const text = await res.text();
-      console.error("Error del servidor:", text);
-      return alert("❌ Movimiento no válido o error del servidor");
+      const errorMessage = await res.text();
+      console.error("Error del servidor:", errorMessage);
+      return alert(`❌ Error: ${errorMessage}`);
     }
+
 
     // Actualizar estado de juego
     currentGame = await res.json();
     renderBoard();
 
-    // Actualizar estado visual del juego
+    // Actualizar front del juego
     if (currentGame.gameStatus === "finished") {
       statusText.textContent = `🏆 ¡Ganó el jugador ${currentGame.turn === 1 ? 2 : 1}!`;
     } else if (currentGame.gameStatus === "draw") {
